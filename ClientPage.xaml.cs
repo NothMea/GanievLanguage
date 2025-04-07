@@ -182,11 +182,6 @@ namespace GanievLanguage
             RecordsPerPageComboBox.SelectedIndex = 0;
         }
 
-        private void Order_Click(object sender, RoutedEventArgs e)
-        {
-            Manager.MainFrame.Navigate(new AddEditPage());
-        }
-
         private void BTNDeleteClient_Click(object sender, RoutedEventArgs e)
         {
             var currentClient = (sender as Button).DataContext as Client;
@@ -276,7 +271,13 @@ namespace GanievLanguage
 
         private void add_Click(object sender, RoutedEventArgs e)
         {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
 
+        private void BTNEditClient_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Client));
+            //NavigationService.Navigate(new AddEditPage());
         }
     }
 }

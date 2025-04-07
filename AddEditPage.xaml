@@ -9,6 +9,54 @@
       Title="AddEditPage">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="350"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="90"></RowDefinition>
+            <RowDefinition Height="90"></RowDefinition>
+            <RowDefinition Height="90"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="ID" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0" ></TextBlock>
+        <TextBlock Grid.Row="1" Text="Фамилия" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0" ></TextBlock>
+        <TextBlock Grid.Row="2" Text="Имя" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+        <TextBlock Grid.Row="3" Text="Отчество" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+        <TextBlock Grid.Row="4" Text="Email" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+        <TextBlock Grid.Row="5" Text="Телефон" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+        <TextBlock Grid.Row="6" Text="Дата рождения" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+        <TextBlock Grid.Row="7" Text="Пол" Margin="5" FontSize="20" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+
+        <TextBlock Text="{Binding ID}" Name="TBID" Margin="5" Grid.Row="0" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBlock>
+        <TextBox Text="{Binding LastName}" Name="TBLastName" Grid.Row="1" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding FirstName}" Name="TBFirstName" Grid.Row="2" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Patronymic}" Name="TBPatron" Grid.Row="3" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Email}" Name="TBEmail" Grid.Row="4" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Phone}" Name="TBNumber" Grid.Row="5" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Birthday}" Name="TBBirthday" Grid.Row="6" Margin="5" FontSize="20" VerticalAlignment="Center" Width="200" Height="25" Grid.Column="1"></TextBox>
+        <StackPanel Orientation="Vertical" Grid.Row="7" VerticalAlignment="Center" Width="200" Height="50" Grid.Column="1">
+            <RadioButton Content="женский" Name="RBtnFem"></RadioButton>
+            <RadioButton Content="мужской" Name="RBtnMal"></RadioButton>
+        </StackPanel>
+
+        <TextBlock Grid.Row="0" Text="Фото" Margin="5" FontSize="20" VerticalAlignment="Center" Width="50" Grid.Column="2"></TextBlock>
+        <Image Width="300" Grid.Column="2" Stretch="UniformToFill" Name="Photo" HorizontalAlignment="Center" Grid.RowSpan="5" Grid.Row="1">
+            <Image.Source>
+                <Binding Path="PhotoPath">
+                </Binding>
+            </Image.Source>
+        </Image>
+
+
+        <Button Name="BtnSave" Content="Сохранить" Grid.Row="8" HorizontalAlignment="Center" Grid.ColumnSpan="3" Click="BtnSave_Click"></Button>
+        <Button Name="BtnEditPhoto" Content="Изменить фото" Grid.Column="2" Grid.Row="6" Click="BtnEditPhoto_Click"></Button>
     </Grid>
 </Page>
+
