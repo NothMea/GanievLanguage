@@ -97,7 +97,7 @@ Click="add_Click"></Button>
                             <TextBlock Text="Дата последнего посещения:  " FontSize="20"></TextBlock>
                             <TextBlock Text="{Binding LastVisitDate}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" FontSize="20"></TextBlock>
                             <TextBlock Text="  Кол-во посещений:  " FontSize="20"></TextBlock>
-                            <TextBlock Text="{Binding VisitCount}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" FontSize="20"></TextBlock>
+                            <TextBlock Text="{Binding VisitCount}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" FontSize="20"></TextBlock> 
                         </StackPanel>
                         <Button Name="BTNDeleteClient" Content="Удалить" Click="BTNDeleteClient_Click" Grid.Column="2" Grid.Row="2"></Button>
                         <Button Name="BTNEditClient" Content="Редактировать" Click="BTNEditClient_Click" Grid.Column="2" Grid.Row="3"></Button>
