@@ -279,5 +279,25 @@ namespace GanievLanguage
             Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Client));
             //NavigationService.Navigate(new AddEditPage());
         }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                GanievLanguageEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                ClientListView.ItemsSource = GanievLanguageEntities.GetContext().Client.ToList();
+            }
+            UpdateClient();
+        }
+
+        private void ClientListView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                GanievLanguageEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                ClientListView.ItemsSource = GanievLanguageEntities.GetContext().Client.ToList();
+            }
+            UpdateClient();
+        }
     }
 }

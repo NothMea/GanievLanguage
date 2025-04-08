@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:GanievLanguage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="1000"
-      Title="ClientPage" FontFamily="Comic Sans MS">
+      Title="ClientPage" FontFamily="Comic Sans MS" IsVisibleChanged="Page_IsVisibleChanged">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -43,7 +43,7 @@ Click="add_Click"></Button>
 
         <!--<Button Name="Order" Content="Добавить клиента" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Order_Click"></Button>-->
 
-        <ListView Name="ClientListView" Grid.Row="1">
+        <ListView Name="ClientListView" Grid.Row="1" IsVisibleChanged="ClientListView_IsVisibleChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -61,7 +61,7 @@ Click="add_Click"></Button>
                         </Grid.RowDefinitions>
                         <Image Width="175" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center" Grid.RowSpan="6" Margin="5">
                             <Image.Source>
-                                <Binding Path="PhotoPath"></Binding>
+                                <Binding Path="PhotoPath" TargetNullValue="D:\3 курс\ИСП-3122\Ганиев\GanievLanguage\picture.png"></Binding>
                             </Image.Source>
                         </Image>
 

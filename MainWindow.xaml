@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GanievLanguage"
         mc:Ignorable="d"
-        Title="GanievLanguage" Height="800" Width="1000"  Icon="school_logo.ico" FontFamily="Comic Sans MS" Background="#FFE7FABF">
+        Title="GanievLanguage" Height="800" Width="1500"  Icon="school_logo.ico" FontFamily="Comic Sans MS" Background="#FFE7FABF">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75"></RowDefinition>

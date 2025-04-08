@@ -29,112 +29,161 @@ namespace GanievLanguage
             InitializeComponent();
             if (SelectedClient != null)
             {
-                this._currentClient = SelectedClient;
-                if (_currentClient.GenderCode == "м")
-                    RBtnMal.IsChecked = true;
-                else
-                    RBtnFem.IsChecked = true;
-
+                _currentClient = SelectedClient;
             }
-            else
-            {
-                TBID.Text = (GanievLanguageEntities.GetContext().Client.OrderByDescending(x => x.ID).First().ID + 1).ToString();
-            }
-        
-
             DataContext = _currentClient;
+            if (_currentClient.GenderCode == "м")
+            {
+                Man.IsChecked = true;
+            }
+            if (_currentClient.GenderCode == "ж")
+            {
+                Woman.IsChecked = true;
+            }
+            if (_currentClient.ID == 0)
+            {
+                WrapID.Visibility = Visibility.Hidden;
+                IDBlock.Visibility = Visibility.Hidden;
+                IDBox.Visibility = Visibility.Hidden;
 
-            //RBtnFem.IsChecked = cli == "ж";
-            //RBtnMal.IsChecked = cli == "м";
-
-
+            }
         }
-
-        private void BtnEditPhoto_Click(object sender, RoutedEventArgs e)
+        private void ChangePicture_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog myOpenFileDialog = new OpenFileDialog();
+            // Путь к корню проекта (без имени проекта)
+            string projectDirectory = GetProjectRootDirectory();
+            string clientsFolderPath = System.IO.Path.Combine(projectDirectory, "Клиенты");
+
+            // Создаем папку, если её нет
+            if (!Directory.Exists(clientsFolderPath))
+            {
+                Directory.CreateDirectory(clientsFolderPath);
+            }
+
+            OpenFileDialog myOpenFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = clientsFolderPath
+            };
+
             if (myOpenFileDialog.ShowDialog() == true)
             {
+                string selectedFilePath = myOpenFileDialog.FileName;
 
-                FileInfo fileInfo = new FileInfo(myOpenFileDialog.FileName);
+                // Сохраняем относительный путь ОТНОСИТЕЛЬНО КОРНЯ ПРОЕКТА
+                _currentClient.PhotoPath = System.IO.Path.Combine("Клиенты", System.IO.Path.GetFileName(selectedFilePath));
 
-
-                if (fileInfo.Length < 2 * 1024 * 1024)
-                {
-                    _currentClient.PhotoPath = myOpenFileDialog.FileName;
-                    Photo.Source = new BitmapImage(new Uri(myOpenFileDialog.FileName));
-                }
-                else
-                {
-
-                    MessageBox.Show("Размер файла превышает 2 мегабайта. Выберите другой файл.");
-                }
+                // Загружаем изображение по полному пути
+                LogoImage.Source = new BitmapImage(new Uri(selectedFilePath));
             }
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        // Метод для получения корня проекта
+        private string GetProjectRootDirectory()
+        {
+            // Путь к исполняемому файлу (bin/Debug)
+            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            // Поднимаемся на 3 уровня: bin/Debug → bin → Корень проекта
+            return System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(exePath)));
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder errors = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(_currentClient.FirstName))
+                errors.AppendLine("Укажите фамилию клиента");
+            else if (!Regex.IsMatch(_currentClient.FirstName, @"^[A-Za-zА-Яа-яЁё\- ]+$") || _currentClient.FirstName.Length > 50)
+                errors.AppendLine("Фамилия может содержать только буквы, пробелы и дефисы, и не может быть длиннее 50 символов");
 
-            // Проверка фамилии
-            if (string.IsNullOrWhiteSpace(_currentClient.LastName) ||
-                !_currentClient.LastName.All(c => char.IsLetter(c) || c == ' ' || c == '-') ||
-                _currentClient.LastName.Length > 50)
-            {
-                errors.AppendLine("Фамилия может содержать только буквы, пробелы и дефисы, и не может быть длиннее 50 символов.");
-            }
-
-            // Проверка имени
-            if (string.IsNullOrWhiteSpace(_currentClient.FirstName) ||
-                !_currentClient.FirstName.All(c => char.IsLetter(c) || c == ' ' || c == '-') ||
-                _currentClient.FirstName.Length > 50)
-            {
+            if (string.IsNullOrWhiteSpace(_currentClient.LastName))
+                errors.AppendLine("Укажите имя клиента");
+            else if (!Regex.IsMatch(_currentClient.LastName, @"^[A-Za-zА-Яа-яЁё\- ]+$") || _currentClient.LastName.Length > 50)
                 errors.AppendLine("Имя может содержать только буквы, пробелы и дефисы, и не может быть длиннее 50 символов.");
-            }
 
-            // Проверка отчества
-            if (string.IsNullOrWhiteSpace(_currentClient.Patronymic) ||
-                !_currentClient.Patronymic.All(c => char.IsLetter(c) || c == ' ' || c == '-') ||
-                _currentClient.Patronymic.Length > 50)
-            {
+            if (string.IsNullOrWhiteSpace(_currentClient.Patronymic))
+                errors.AppendLine("Укажите отчество клиента");
+            else if (!Regex.IsMatch(_currentClient.Patronymic, @"^[A-Za-zА-Яа-яЁё\- ]+$") || _currentClient.Patronymic.Length > 50)
                 errors.AppendLine("Отчество может содержать только буквы, пробелы и дефисы, и не может быть длиннее 50 символов.");
-            }
 
-            // Проверка email
             if (string.IsNullOrWhiteSpace(_currentClient.Email))
-            {
-                errors.AppendLine("Email не может быть пустым.");
-            }
+                errors.AppendLine("Укажите Email!");
             else
             {
-                try
+
+                string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+                if (!Regex.IsMatch(_currentClient.Email, pattern))
+                    errors.AppendLine("Укажите правильный Email!");
+                const string russianLetters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+                if (_currentClient.Email.Any(letter => russianLetters.Contains(letter)))
                 {
-                    var addr = new System.Net.Mail.MailAddress(_currentClient.Email);
-                    // Проверка, что доменная часть содержит минимум две буквы после точки
-                    if (addr.Address != _currentClient.Email ||
-                        addr.Host.Split('.').Length < 2 ||
-                        addr.Host.Split('.').Last().Length < 2)
+                    errors.AppendLine("Email не может содержать кириллицу");
+                }
+                int domenCount = 0;
+                int dotCount = 0;
+                for (int i = 0; i < _currentClient.Email.Length; i++)
+                {
+                    if (_currentClient.Email[i] == '.')
                     {
-                        throw new Exception();
+                        for (int j = i + 1; j < _currentClient.Email.Length; j++)
+                        {
+                            domenCount++;
+                        }
+                    }
+                    if (_currentClient.Email[i] == '.')
+                        dotCount++;
+                }
+                if (domenCount < 2)
+                    errors.AppendLine("Email неверный. Домен не может быть менее 2 символов");
+                if (dotCount != 1)
+                    errors.AppendLine("Email может содержать только одну точку");
+
+
+            }
+
+
+
+            if (string.IsNullOrWhiteSpace(BirthDP.Text))
+            { errors.AppendLine("Укажите дату рождения клиента"); }
+            else
+            {
+                _currentClient.Birthday = Convert.ToDateTime(BirthDP.Text);
+            }
+
+
+            if (string.IsNullOrWhiteSpace(_currentClient.Phone))
+                errors.AppendLine("Укажите номер телефона!");
+            else
+            {
+                string phonePattern = @"^\+?\d[\d\-\(\)\s]+$";
+                string clearPhone = _currentClient.Phone.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "").Replace("+", "");
+                if (!Regex.IsMatch(_currentClient.Phone, phonePattern) || !clearPhone.All(char.IsDigit))
+                    errors.AppendLine("Телефон может содержать только цифры, плюс, минус, открывающая и закрывающая круглые скобки, знак пробела!");
+                else
+                {
+                    if (_currentClient.Phone.Length > 20)
+                    {
+                        errors.AppendLine("Укажите в телефоне менее 20 символов у клиента");
+
                     }
                 }
-                catch
-                {
-                    errors.AppendLine("Укажите правильный email агента.");
-                }
             }
 
-            // Проверка телефона
-            if (string.IsNullOrWhiteSpace(_currentClient.Phone))
+
+
+            // _currentClient.Birthday = Convert.ToDateTime(BirthDP.Text);
+
+            if (Woman.IsChecked == true)
             {
-                errors.AppendLine("Телефон не может быть пустым.");
+                _currentClient.GenderCode = "ж";
             }
             else
             {
-                string phonePattern = @"^[0-9() ]+$"; // разрешаем цифры, скобки, пробелы и дефисы
-                if (!Regex.IsMatch(_currentClient.Phone, phonePattern))
+                if (Man.IsChecked == true)
                 {
-                    errors.AppendLine("Телефон может содержать только цифры, минусы, скобки и пробелы.");
+                    _currentClient.GenderCode = "м";
+                }
+                else
+                {
+                    errors.AppendLine("Укажите пол клиента");
                 }
             }
 
@@ -144,40 +193,21 @@ namespace GanievLanguage
                 return;
             }
 
-            _currentClient.GenderCode = RBtnMal.IsChecked == true ? "м" : "ж";
-
             if (_currentClient.ID == 0)
             {
-                _currentClient.ID = Convert.ToInt32(TBID.Text);
-                _currentClient.LastName = TBLastName.Text;
-                _currentClient.FirstName = TBLastName.Text;
-                _currentClient.Patronymic = TBPatron.Text;
-                _currentClient.Email = TBEmail.Text;
-                _currentClient.Phone = TBNumber.Text;
-                DateTime var = DateTime.Now;
-                DateTime.TryParse(TBBirthday.Text, out var);
-                _currentClient.Birthday = var;
-                _currentClient.RegistrationDate = DateTime.Now;
-                if (RBtnFem.IsChecked == true)
-                {
-                    _currentClient.GenderCode = "ж";
-                }
-                else
-                {
-                    _currentClient.GenderCode = "м";
-                }
-                _currentClient.PhotoPath = "/Resources/Клиенты/m99.png";
                 GanievLanguageEntities.GetContext().Client.Add(_currentClient);
             }
             try
             {
+                _currentClient.RegistrationDate = DateTime.Today;
+
                 GanievLanguageEntities.GetContext().SaveChanges();
                 MessageBox.Show("Информация сохранена");
                 Manager.MainFrame.GoBack();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message.ToString());
+                MessageBox.Show(ex.ToString());
             }
         }
     }

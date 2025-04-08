@@ -191,6 +191,7 @@
       <DependentUpon>GanievLang.edmx</DependentUpon>
       <LastGenOutput>GanievLang.cs</LastGenOutput>
     </Content>
+    <Resource Include="Клиенты\picture.png" />
     <Resource Include="Клиенты\1.jpg" />
     <Resource Include="Клиенты\10.jpg" />
     <Resource Include="Клиенты\11.jpg" />
